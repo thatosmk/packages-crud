@@ -2,9 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
+import { deletePackage } from '../backend';
+
 
 const Dashboard = ({ firstName, packages }) => {
   const navigate = useNavigate();
+
+  function removePackage(id) {
+    // deletePackage({id: id})
+    //   .then((data) => {
+    //     console.log(data)
+    //   })
+    //   .catch((error) => {
+    //     console.error(error)
+    //   })
+  }
 
   return (
     <div className='container mx-auto py-10 sm:py-20'>
@@ -12,7 +24,7 @@ const Dashboard = ({ firstName, packages }) => {
         <h1 className='scroll-m-10 text-xl font-bold tracking-tight lg:text-3xl'>Welcome back, {firstName}</h1>
         <button onClick={()=> { navigate('/new-package')}} className='inline-flex items-center justify-center shadow-sm rounded-md leading-4 text-sm lg:text-base font-normal bg-gray-900 text-white px-4 py-2'>Add package</button>
       </div>
-      {packages === undefined &&
+      {(packages === undefined || packages.length === 0) &&
         <div className='my-10 sm:my-20 w-full mx-auto'>
           <h4 className='text-lg font-semibold text-center tracking-tight lg:text-2xl'>You have no packages</h4>
           <p className="text-gray-400 text-center leading-7 [&:not(:first-child)]:mt-6">Enter your email and password below to login to your account</p>
@@ -45,7 +57,7 @@ const Dashboard = ({ firstName, packages }) => {
                     <td className='px-6 py-2 text-sm whitespace-nowrap'>
                       <div className='flex items-center space-x-4'>
                         <button onClick={()=> { navigate('/edit-package')}} className='inline-flex items-center justify-center shadow-sm rounded-md leading-4 text-sm lg:text-base font-normal text-gray-800 hover:text-gray-400'>Edit</button>
-                        <button onClick={()=> {}} className='inline-flex items-center justify-center shadow-sm rounded-md leading-4 text-sm lg:text-base font-normal text-red-600 hover:text-red-400'>Destroy</button>
+                        <button onClick={removePackage(item.id)} className='inline-flex items-center justify-center shadow-sm rounded-md leading-4 text-sm lg:text-base font-normal text-red-600 hover:text-red-400'>Destroy</button>
                       </div>
                     </td>
                   </tr>

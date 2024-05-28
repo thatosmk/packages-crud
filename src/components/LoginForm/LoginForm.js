@@ -29,8 +29,10 @@ function LoginForm() {
         // make the API request
         signIn({ email: email, password: password})
           .then((data) => {
-            setToken(data.token)
-            navigate('dashboard')
+            if (data['token']) {
+                setToken(data['token'])
+                navigate('dashboard')
+            }
           })
           .catch((error) => {
             setError(error['message'])
