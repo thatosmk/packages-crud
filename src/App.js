@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Home from './pages/Home';
 import NewPackage from './pages/NewPackage';
+import EditPackage from './pages/EditPackage';
 
 function App() {
   let packages = [
@@ -15,6 +16,7 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/dashboard' element={<Dashboard firstName='Thato' packages={packages}/>} />
           <Route path='/new-package' element={<NewPackage />} />
+          <Route path='/edit-package' element={<EditPackage />} />
         </Routes>
       </div>
     </>

@@ -45,7 +45,8 @@ const Dashboard = (props) => {
                     <td className='px-6 py-2 text-sm whitespace-nowrap'>{item.timeslot}</td>
                     <td className='px-6 py-2 text-sm whitespace-nowrap'>
                       <div className='flex items-center space-x-4'>
-
+                        <button onClick={()=> { navigate('/edit-package')}} className='inline-flex items-center justify-center shadow-sm rounded-md leading-4 text-sm lg:text-base font-normal text-gray-800 hover:text-gray-400'>Edit</button>
+                        <button onClick={()=> {}} className='inline-flex items-center justify-center shadow-sm rounded-md leading-4 text-sm lg:text-base font-normal text-red-600 hover:text-red-400'>Destroy</button>
                       </div>
                     </td>
                   </tr>
