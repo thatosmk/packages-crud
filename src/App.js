@@ -2,6 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 
 import Dashboard from './pages/Dashboard';
 import Home from './pages/Home';
+import NewPackage from './pages/NewPackage';
 
 function App() {
   let packages = [
@@ -13,6 +14,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/dashboard' element={<Dashboard firstName='Thato' packages={packages}/>} />
+          <Route path='/new-package' element={<NewPackage />} />
         </Routes>
       </div>
     </>
