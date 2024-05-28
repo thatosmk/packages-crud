@@ -1,19 +1,23 @@
-import { Component } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useForm } from "react-hook-form";
 
-class LoginForm extends Component {
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
-    const onSubmit = data => console.log(data);
+function LoginForm() {
+    const navigate = useNavigate();
+    const { handleSubmit } = useForm();
+    // const { register, handleSubmit, watch, formState: { errors } } = useForm();
 
+    const onSubmit = (data) => {
+        console.log(data);
+        navigate('dashboard');
+    };
 
-    render() {
       return (
           <div className="max-w-lg mx-auto">
             <div className="rounded-lg border border-gray-300 shadow-sm px-4 sm:px-12 py-6 sm:py-16">
               <h1 className="scroll-m-10 text-xl font-bold tracking-tight lg:text-3xl">Login</h1>
               <p className="leading-7 [&:not(:first-child)]:mt-6">Enter your email and password below to login to your account</p>
               <div className="my-4 sm:my-8">
-                <form className="space-y-6" onSubmit={}>
+                <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
                   <div>
                       <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Email address</label>
                       <div class="mt-2">
@@ -41,7 +45,6 @@ class LoginForm extends Component {
             </div>
           </div>
       );
-    };
 };
 
 export default LoginForm;
