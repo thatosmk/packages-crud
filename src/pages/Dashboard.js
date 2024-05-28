@@ -22,14 +22,16 @@ const Dashboard = ({ firstName, packages }) => {
     <div className='container mx-auto py-10 sm:py-20'>
       <div className='flex items-center justify-between'>
         <h1 className='scroll-m-10 text-xl font-bold tracking-tight lg:text-3xl'>Welcome back, {firstName}</h1>
-        <button onClick={()=> { navigate('/new-package')}} className='inline-flex items-center justify-center shadow-sm rounded-md leading-4 text-sm lg:text-base font-normal bg-gray-900 text-white px-4 py-2'>Add package</button>
+        {(packages === undefined || packages.length > 0) &&
+          <button onClick={()=> { navigate('/new-package')}} className='inline-flex items-center justify-center shadow-sm rounded-md leading-4 text-sm lg:text-base font-normal bg-gray-900 text-white px-4 py-2'>Add package</button>
+        }
       </div>
       {(packages === undefined || packages.length === 0) &&
         <div className='my-10 sm:my-20 w-full mx-auto'>
           <h4 className='text-lg font-semibold text-center tracking-tight lg:text-2xl'>You have no packages</h4>
           <p className="text-gray-400 text-center leading-7 [&:not(:first-child)]:mt-6">Enter your email and password below to login to your account</p>
           <div className='text-center mt-4'>
-            <button className='inline-flex items-center justify-center shadow-sm rounded-md leading-4 text-sm lg:text-base font-normal bg-gray-900 text-white px-4 py-2'>Add package</button>
+            <button onClick={()=> { navigate('/new-package') }} className='inline-flex items-center justify-center shadow-sm rounded-md leading-4 text-sm lg:text-base font-normal bg-gray-900 text-white px-4 py-2'>Add package</button>
           </div>
         </div>
       }

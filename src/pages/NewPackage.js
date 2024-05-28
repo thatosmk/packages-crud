@@ -1,14 +1,54 @@
-import React from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+
+import { createPackage } from '../backend';
 
 const NewPackage = () => {
     const navigate = useNavigate();
+    const [location, setLocation] = useState('')
+    const [destination, setDestination] = useState('')
+    const [date, setDate] = useState('')
+    const [timeslot, setTimeslot] = useState('')
+    const [error, setError] = useState('')
+
+    function handleLocationChange(event) {
+        const { value } = event.target;
+        setLocation(value);
+    }
+    function handleDestinationChange(event) {
+        const { value } = event.target;
+        setDestination(value);
+    }
+    function handleDateChange(event) {
+        const { value } = event.target;
+        setDate(value);
+    }
+    function handleTimeslotChange(event) {
+        const { value } = event.target;
+        setTimeslot(value);
+    }
+
+    function handleSubmit(event) {
+        event.preventDefault();
+
+        // make the API request
+        createPackage()
+          .then((data) => {
+            if (data['token']) {
+                // setToken(data['token'])
+                navigate('dashboard')
+            }
+          })
+          .catch((error) => {
+            setError(error['message'])
+          })
+    }
 
     return (
         <div className='container mx-auto py-10 sm:py-20'>
             <h1 className='scroll-m-10 text-xl font-bold tracking-tight lg:text-3xl'>Add new package</h1>
             <p className="mt-1 text-sm lg:text-base leading-6 text-gray-600">This information will be displayed publicly so be careful what you share.</p>
-            <form>
+            <form onSubmit={handleSubmit}>
                 <div className="space-y-12">
                     <div className="border-b border-gray-900/10 pb-12">
                     </div>

@@ -41,6 +41,32 @@ async function allPackages() {
     return response.json();
 }
 
+// Create a new package
+async function createPackage({location, destination, date, timeslot}) {
+
+    const response = await fetch(`${API_BASE_URL}/api/v1/packages`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        "Access-Control-Allow-Methods":
+          "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "*",
+      },
+      body: JSON.stringify({
+        package: {
+            location: location,
+            destination: destination,
+            date: date,
+            timeslot: timeslot
+        }
+      }),
+    });
+
+    return response.json();
+}
+
 async function deletePackage({id}) {
 
     const response = await fetch(`${API_BASE_URL}/api/v1/packages/${id}`, {
