@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 
 
-const Dashboard = (props) => {
-  const { firstName, packages } = props;
+const Dashboard = ({ firstName, packages }) => {
   const navigate = useNavigate();
 
   return (
