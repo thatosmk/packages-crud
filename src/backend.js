@@ -23,7 +23,7 @@ async function signIn({ email, password }) {
 
 // Get all packages
 async function allPackages() {
-  const response = await fetch(`${API_BASE_URL}/api/v1/packages`, {
+  await fetch(`${API_BASE_URL}/api/v1/packages`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -32,9 +32,7 @@ async function allPackages() {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Headers": "*",
     },
-  });
-
-  return response.json();
+  }).then((data) => { return data.json(); }).then((data) => { return data['packages'] }).catch((error) => console.error(error));
 }
 
 // Create a new package
@@ -61,6 +59,23 @@ async function createPackage({ location, destination, date, timeslot }) {
   return response.json();
 }
 
+// get package
+async function getPackage({ id }) {
+  const response = await fetch(`${API_BASE_URL}/api/v1/packages/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers": "*",
+    },
+  });
+
+  return response.json();
+}
+
+// delete
 async function deletePackage({ id }) {
   const response = await fetch(`${API_BASE_URL}/api/v1/packages/${id}`, {
     method: "DELETE",
@@ -76,4 +91,4 @@ async function deletePackage({ id }) {
   return response.json();
 }
 
-export { signIn, deletePackage, allPackages };
+export { API_BASE_URL, token, signIn, deletePackage, allPackages, createPackage, getPackage };

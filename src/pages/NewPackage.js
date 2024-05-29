@@ -1,7 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import "flatpickr/dist/themes/material_green.css";
+
+import Flatpickr from "react-flatpickr";
+
+
 import { createPackage } from "../backend";
+import { useLoggedInStatus } from "../hooks";
+import { inputClassName } from "../helpers";
 
 const NewPackage = () => {
   const navigate = useNavigate();
@@ -11,6 +18,8 @@ const NewPackage = () => {
   const [timeslot, setTimeslot] = useState("");
   const [error, setError] = useState("");
 
+  const isLoggedIn = useLoggedInStatus();
+
   function handleLocationChange(event) {
     const { value } = event.target;
     setLocation(value);
@@ -19,29 +28,30 @@ const NewPackage = () => {
     const { value } = event.target;
     setDestination(value);
   }
-  function handleDateChange(event) {
-    const { value } = event.target;
+  function handleDateChange(value) {
     setDate(value);
   }
-  function handleTimeslotChange(event) {
-    const { value } = event.target;
+  function handleTimeslotChange(value) {
     setTimeslot(value);
   }
 
   function handleSubmit(event) {
     event.preventDefault();
 
-    // make the API request
-    createPackage()
-      .then((data) => {
-        if (data["token"]) {
-          // setToken(data['token'])
-          navigate("dashboard");
-        }
-      })
-      .catch((error) => {
-        setError(error["message"]);
-      });
+    if (isLoggedIn) {
+        // make the API request
+        createPackage({location: location, destination: destination, date: date, timeslot: timeslot })
+        .then((data) => {
+            if (data["package"]) {
+            navigate("/dashboard");
+            }
+        })
+        .catch((error) => {
+            setError(error["message"]);
+        });
+    } else {
+        navigate('/')
+    }
   }
 
   return (
@@ -75,10 +85,12 @@ const NewPackage = () => {
                 <div className="mt-2">
                   <input
                     type="text"
+                    value={location}
+                    onChange={handleLocationChange}
                     name="location"
                     id="location"
                     autoComplete="package-location"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className={inputClassName}
                   />
                 </div>
               </div>
@@ -94,26 +106,30 @@ const NewPackage = () => {
                   <input
                     type="text"
                     name="destination"
+                    value={destination}
+                    onChange={handleDestinationChange}
                     id="destination"
                     autoComplete="destination"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className={inputClassName}
                   />
                 </div>
               </div>
 
               <div className="sm:col-span-3">
                 <label
-                  for="email"
+                  for="date"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
                   Date
                 </label>
                 <div className="mt-2">
-                  <input
-                    id="date"
-                    name="date"
-                    type="text"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  <Flatpickr
+                      options={{ minDate: new Date(), dateFormat: "Y-m-d", }}
+                      className={inputClassName}
+                      value={date}
+                      onChange={([date]) => {
+                        setDate(date);
+                      }}
                   />
                 </div>
               </div>
@@ -126,16 +142,14 @@ const NewPackage = () => {
                   Time
                 </label>
                 <div className="mt-2">
-                  <select
-                    id="country"
-                    name="country"
-                    autocomplete="country-name"
-                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                  >
-                    <option>United States</option>
-                    <option>Canada</option>
-                    <option>Mexico</option>
-                  </select>
+                  <Flatpickr
+                      options={{ noCalendar: true, enableTime: true, dateFormat: "H:i" }}
+                      className={inputClassName}
+                      value={timeslot}
+                      onChange={([date]) => {
+                        setTimeslot(date);
+                      }}
+                  />
                 </div>
               </div>
             </div>

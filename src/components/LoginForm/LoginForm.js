@@ -4,23 +4,10 @@ import { useForm } from "react-hook-form";
 
 import { signIn } from "../../backend";
 
-function useSaveTokenToLocalStorage(initialToken) {
-  const [token, setToken] = useState(
-    () => window.localStorage.getItem("token") || initialToken,
-  );
-
-  useEffect(() => {
-    window.localStorage.setItem("token", token);
-  }, [token]);
-
-  return [token, setToken];
-}
-
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [token, setToken] = useSaveTokenToLocalStorage("");
 
   const navigate = useNavigate();
 
@@ -31,8 +18,10 @@ function LoginForm() {
     signIn({ email: email, password: password })
       .then((data) => {
         if (data["token"]) {
-          setToken(data["token"]);
-          navigate("dashboard");
+          window.localStorage.setItem('token', data['token']);
+          window.localStorage.setItem('expiry', data['expiry']);
+
+          navigate("/dashboard");
         }
       })
       .catch((error) => {
@@ -42,8 +31,6 @@ function LoginForm() {
     setPassword("");
   }
 
-  // useEffect(() => {
-  // })
 
   function handleEmailChange(event) {
     const { value } = event.target;

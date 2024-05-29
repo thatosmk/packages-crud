@@ -4,34 +4,31 @@ import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import NewPackage from "./pages/NewPackage";
 import EditPackage from "./pages/EditPackage";
-
-import { allPackages } from "./backend";
-import { useState } from "react";
+import { useLoggedInStatus } from "./hooks";
 
 function App() {
-  const packages = () => {
-    allPackages.then((data) => data);
-  };
+
+  const isLoggedIn = useLoggedInStatus()
 
   return (
     <>
-      <div className="container mx-auto py-20 sm:py-32">
+      <div className="container mx-auto py-6 sm:py-12">
         <Routes>
           <Route
             path="/"
             element={
-              window.localStorage.getItem("token") ? (
+              isLoggedIn ? (
                 <Navigate to="/dashboard" />
               ) : (
-                Home
+                <Home />
               )
             }
           />
           <Route
             path="/dashboard"
             element={
-              window.localStorage.getItem("token") ? (
-                <Dashboard firstName="Thato" packages={packages} />
+              isLoggedIn ? (
+                <Dashboard firstName="Thato" />
               ) : (
                 <Navigate to="/" />
               )
@@ -40,7 +37,7 @@ function App() {
           <Route
             path="/new-package"
             element={
-              window.localStorage.getItem("token") ? (
+              isLoggedIn ? (
                 <NewPackage />
               ) : (
                 <Navigate to="/" />
@@ -48,9 +45,9 @@ function App() {
             }
           />
           <Route
-            path="/edit-package"
+            path="/edit-package/:packageId"
             element={
-              window.localStorage.getItem("token") ? (
+              isLoggedIn ? (
                 <EditPackage />
               ) : (
                 <Navigate to="/" />

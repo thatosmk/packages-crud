@@ -1,20 +1,44 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
-import { deletePackage } from "../backend";
+import { API_BASE_URL, token, deletePackage } from "../backend";
+import { useLoggedInStatus } from "../hooks";
 
-const Dashboard = ({ firstName, packages }) => {
+const Dashboard = ({ firstName }) => {
   const navigate = useNavigate();
+  const [packages, setPackages] = useState(null);
 
-  function removePackage(id) {
-    // deletePackage({id: id})
-    //   .then((data) => {
-    //     console.log(data)
-    //   })
-    //   .catch((error) => {
-    //     console.error(error)
-    //   })
+  const isLoggedIn = useLoggedInStatus()
+
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/api/v1/packages`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "*",
+      },
+    }).then((data) => {
+        return data.json();
+    }).then((data) => {
+        console.log(data)
+        setPackages(data.packages);
+    }).catch((error) => console.error(error));
+  }, [packages]) 
+
+  function removePackage(event, id) {
+    event.preventDefault();
+    console.log(id)
+    deletePackage({id: id})
+      .then((data) => {
+        console.log(data)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
   }
 
   return (
@@ -23,7 +47,7 @@ const Dashboard = ({ firstName, packages }) => {
         <h1 className="scroll-m-10 text-xl font-bold tracking-tight lg:text-3xl">
           Welcome back, {firstName}
         </h1>
-        {(packages === undefined || packages.length > 0) && (
+        {(packages !== undefined && packages !== null && packages.length > 0) && (
           <button
             onClick={() => {
               navigate("/new-package");
@@ -34,7 +58,7 @@ const Dashboard = ({ firstName, packages }) => {
           </button>
         )}
       </div>
-      {(packages === undefined || packages.length === 0) && (
+      {(packages === undefined || packages === null || packages.length === 0) && (
         <div className="mx-auto my-10 w-full sm:my-20">
           <h4 className="text-center text-lg font-semibold tracking-tight lg:text-2xl">
             You have no packages
@@ -54,7 +78,7 @@ const Dashboard = ({ firstName, packages }) => {
           </div>
         </div>
       )}
-      {packages !== undefined && packages.length > 0 && (
+      {(packages !== null && packages.length > 0) && (
         <div className="mt-4 overflow-scroll shadow ring-1 ring-black ring-opacity-5 sm:mt-12 md:rounded-xl">
           <table className="min-w-full divide-y divide-gray-300">
             <thead>
@@ -80,7 +104,7 @@ const Dashboard = ({ firstName, packages }) => {
             <tbody className="divide-y divide-gray-200 bg-white">
               {packages.map((item) => (
                 <tr key={item.id}>
-                  <td className="whitespace-nowrap px-6 py-2 text-sm">
+                  <td className="whitespace-nowrap px-6 py-2 text-sm truncate">
                     {item.referenceNumber}
                   </td>
                   <td className="whitespace-nowrap px-6 py-2 text-sm">
@@ -98,15 +122,15 @@ const Dashboard = ({ firstName, packages }) => {
                   <td className="whitespace-nowrap px-6 py-2 text-sm">
                     <div className="flex items-center space-x-4">
                       <button
-                        onClick={() => {
-                          navigate("/edit-package");
+                        onClick={(e) => {
+                          navigate(`/edit-package/${item.id}`);
                         }}
                         className="inline-flex items-center justify-center rounded-md text-sm font-normal leading-4 text-gray-800 shadow-sm hover:text-gray-400 lg:text-base"
                       >
                         Edit
                       </button>
                       <button
-                        onClick={removePackage(item.id)}
+                        onClick={(e) => { removePackage(e, item.id) }}
                         className="inline-flex items-center justify-center rounded-md text-sm font-normal leading-4 text-red-600 shadow-sm hover:text-red-400 lg:text-base"
                       >
                         Destroy
@@ -124,17 +148,7 @@ const Dashboard = ({ firstName, packages }) => {
 };
 
 Dashboard.propTypes = {
-  firstName: PropTypes.string.isRequired,
-  packages: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-      referenceNumber: PropTypes.string,
-      location: PropTypes.string,
-      destination: PropTypes.string,
-      date: PropTypes.string,
-      timeslot: PropTypes.string,
-    }),
-  ),
+  firstName: PropTypes.string.isRequired
 };
 
 export default Dashboard;
