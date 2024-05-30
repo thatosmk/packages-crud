@@ -23,5 +23,3 @@ Unfortunately, we made the following tradeoffs in this application
 - We were unable to full implement the redirect after a user logs in, there for, after submitting the form, you need to refresh the page to view the logged in dashboard.
 
 - We decided not to write tests for the frontend.
-- We decided not to write tests for the frontend.
-
