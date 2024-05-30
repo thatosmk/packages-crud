@@ -3,13 +3,13 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
 import { API_BASE_URL, token, deletePackage } from "../backend";
-import { useLoggedInStatus } from "../hooks";
+import { useLoggedInStatus } from "../components/hooks/hooks";
 
 const Dashboard = ({ firstName }) => {
   const navigate = useNavigate();
   const [packages, setPackages] = useState(null);
 
-  const isLoggedIn = useLoggedInStatus()
+  const isLoggedIn = useLoggedInStatus();
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/api/v1/packages`, {
@@ -17,28 +17,32 @@ const Dashboard = ({ firstName }) => {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
-        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+        "Access-Control-Allow-Methods":
+          "GET, POST, PUT, DELETE, PATCH, OPTIONS",
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Headers": "*",
       },
-    }).then((data) => {
+    })
+      .then((data) => {
         return data.json();
-    }).then((data) => {
-        console.log(data)
+      })
+      .then((data) => {
+        console.log(data);
         setPackages(data.packages);
-    }).catch((error) => console.error(error));
-  }, [packages]) 
+      })
+      .catch((error) => console.error(error));
+  }, [packages]);
 
   function removePackage(event, id) {
     event.preventDefault();
-    console.log(id)
-    deletePackage({id: id})
+    console.log(id);
+    deletePackage({ id: id })
       .then((data) => {
-        console.log(data)
+        console.log(data);
       })
       .catch((error) => {
-        console.error(error)
-      })
+        console.error(error);
+      });
   }
 
   return (
@@ -47,7 +51,7 @@ const Dashboard = ({ firstName }) => {
         <h1 className="scroll-m-10 text-xl font-bold tracking-tight lg:text-3xl">
           Welcome back, {firstName}
         </h1>
-        {(packages !== undefined && packages !== null && packages.length > 0) && (
+        {packages !== undefined && packages !== null && packages.length > 0 && (
           <button
             onClick={() => {
               navigate("/new-package");
@@ -58,7 +62,9 @@ const Dashboard = ({ firstName }) => {
           </button>
         )}
       </div>
-      {(packages === undefined || packages === null || packages.length === 0) && (
+      {(packages === undefined ||
+        packages === null ||
+        packages.length === 0) && (
         <div className="mx-auto my-10 w-full sm:my-20">
           <h4 className="text-center text-lg font-semibold tracking-tight lg:text-2xl">
             You have no packages
@@ -78,7 +84,7 @@ const Dashboard = ({ firstName }) => {
           </div>
         </div>
       )}
-      {(packages !== null && packages.length > 0) && (
+      {packages !== null && packages.length > 0 && (
         <div className="mt-4 overflow-scroll shadow ring-1 ring-black ring-opacity-5 sm:mt-12 md:rounded-xl">
           <table className="min-w-full divide-y divide-gray-300">
             <thead>
@@ -104,7 +110,7 @@ const Dashboard = ({ firstName }) => {
             <tbody className="divide-y divide-gray-200 bg-white">
               {packages.map((item) => (
                 <tr key={item.id}>
-                  <td className="whitespace-nowrap px-6 py-2 text-sm truncate">
+                  <td className="truncate whitespace-nowrap px-6 py-2 text-sm">
                     {item.referenceNumber}
                   </td>
                   <td className="whitespace-nowrap px-6 py-2 text-sm">
@@ -130,7 +136,9 @@ const Dashboard = ({ firstName }) => {
                         Edit
                       </button>
                       <button
-                        onClick={(e) => { removePackage(e, item.id) }}
+                        onClick={(e) => {
+                          removePackage(e, item.id);
+                        }}
                         className="inline-flex items-center justify-center rounded-md text-sm font-normal leading-4 text-red-600 shadow-sm hover:text-red-400 lg:text-base"
                       >
                         Destroy
@@ -148,7 +156,7 @@ const Dashboard = ({ firstName }) => {
 };
 
 Dashboard.propTypes = {
-  firstName: PropTypes.string.isRequired
+  firstName: PropTypes.string.isRequired,
 };
 
 export default Dashboard;

@@ -5,10 +5,9 @@ import "flatpickr/dist/themes/material_green.css";
 
 import Flatpickr from "react-flatpickr";
 
-
 import { createPackage } from "../backend";
-import { useLoggedInStatus } from "../hooks";
-import { inputClassName } from "../helpers";
+import { useLoggedInStatus } from "../components/hooks/hooks";
+import { inputClassName } from "../components/helpers/helpers";
 
 const NewPackage = () => {
   const navigate = useNavigate();
@@ -39,18 +38,23 @@ const NewPackage = () => {
     event.preventDefault();
 
     if (isLoggedIn) {
-        // make the API request
-        createPackage({location: location, destination: destination, date: date, timeslot: timeslot })
+      // make the API request
+      createPackage({
+        location: location,
+        destination: destination,
+        date: date,
+        timeslot: timeslot,
+      })
         .then((data) => {
-            if (data["package"]) {
+          if (data["package"]) {
             navigate("/dashboard");
-            }
+          }
         })
         .catch((error) => {
-            setError(error["message"]);
+          setError(error["message"]);
         });
     } else {
-        navigate('/')
+      navigate("/");
     }
   }
 
@@ -124,12 +128,12 @@ const NewPackage = () => {
                 </label>
                 <div className="mt-2">
                   <Flatpickr
-                      options={{ minDate: new Date(), dateFormat: "Y-m-d", }}
-                      className={inputClassName}
-                      value={date}
-                      onChange={([date]) => {
-                        setDate(date);
-                      }}
+                    options={{ minDate: new Date(), dateFormat: "Y-m-d" }}
+                    className={inputClassName}
+                    value={date}
+                    onChange={([date]) => {
+                      setDate(date);
+                    }}
                   />
                 </div>
               </div>
@@ -143,12 +147,16 @@ const NewPackage = () => {
                 </label>
                 <div className="mt-2">
                   <Flatpickr
-                      options={{ noCalendar: true, enableTime: true, dateFormat: "H:i" }}
-                      className={inputClassName}
-                      value={timeslot}
-                      onChange={([date]) => {
-                        setTimeslot(date);
-                      }}
+                    options={{
+                      noCalendar: true,
+                      enableTime: true,
+                      dateFormat: "H:i",
+                    }}
+                    className={inputClassName}
+                    value={timeslot}
+                    onChange={([date]) => {
+                      setTimeslot(date);
+                    }}
                   />
                 </div>
               </div>

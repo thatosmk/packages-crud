@@ -4,11 +4,10 @@ import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import NewPackage from "./pages/NewPackage";
 import EditPackage from "./pages/EditPackage";
-import { useLoggedInStatus } from "./hooks";
+import { useLoggedInStatus } from "./components/hooks/hooks";
 
 function App() {
-
-  const isLoggedIn = useLoggedInStatus()
+  const isLoggedIn = useLoggedInStatus();
 
   return (
     <>
@@ -16,43 +15,21 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={
-              isLoggedIn ? (
-                <Navigate to="/dashboard" />
-              ) : (
-                <Home />
-              )
-            }
+            element={isLoggedIn ? <Navigate to="/dashboard" /> : <Home />}
           />
           <Route
             path="/dashboard"
             element={
-              isLoggedIn ? (
-                <Dashboard firstName="Thato" />
-              ) : (
-                <Navigate to="/" />
-              )
+              isLoggedIn ? <Dashboard firstName="Thato" /> : <Navigate to="/" />
             }
           />
           <Route
             path="/new-package"
-            element={
-              isLoggedIn ? (
-                <NewPackage />
-              ) : (
-                <Navigate to="/" />
-              )
-            }
+            element={isLoggedIn ? <NewPackage /> : <Navigate to="/" />}
           />
           <Route
             path="/edit-package/:packageId"
-            element={
-              isLoggedIn ? (
-                <EditPackage />
-              ) : (
-                <Navigate to="/" />
-              )
-            }
+            element={isLoggedIn ? <EditPackage /> : <Navigate to="/" />}
           />
         </Routes>
       </div>

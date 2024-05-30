@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { useFetchPackage } from "../hooks";
-import { inputClassName } from "../helpers";
+import { useFetchPackage } from "../components/hooks/hooks";
+import { inputClassName } from "../components/helpers/helpers";
 
 import "flatpickr/dist/themes/material_green.css";
 
@@ -12,12 +12,12 @@ const EditPackage = () => {
   const navigate = useNavigate();
 
   const { packageId } = useParams();
-  const { data, error, loading } = useFetchPackage({packageId: packageId});
+  const { data, error, loading } = useFetchPackage({ packageId: packageId });
 
-  const [location, setLocation] = useState('');
-  const [destination, setDestination] = useState('');
-  const [date, setDate] = useState('');
-  const [timeslot, setTimeslot] = useState('');
+  const [location, setLocation] = useState("");
+  const [destination, setDestination] = useState("");
+  const [date, setDate] = useState("");
+  const [timeslot, setTimeslot] = useState("");
 
   function handleLocationChange(event) {
     const { value } = event.target;
@@ -43,7 +43,7 @@ const EditPackage = () => {
         This information will be displayed publicly so be careful what you
         share.
       </p>
-      {(data !== undefined && data !== null) &&
+      {data !== undefined && data !== null && (
         <form>
           <div className="space-y-12">
             <div className="border-b border-gray-900/10 pb-12"></div>
@@ -98,12 +98,12 @@ const EditPackage = () => {
                   </label>
                   <div className="mt-2">
                     <Flatpickr
-                        options={{ minDate: new Date() }}
-                        className={inputClassName}
-                        value={data.date}
-                        onChange={([date]) => {
-                          setDate(date);
-                        }}
+                      options={{ minDate: new Date() }}
+                      className={inputClassName}
+                      value={data.date}
+                      onChange={([date]) => {
+                        setDate(date);
+                      }}
                     />
                   </div>
                 </div>
@@ -117,10 +117,10 @@ const EditPackage = () => {
                   </label>
                   <div className="mt-2">
                     <Flatpickr
-                        options={{ noCalendar: true, enableTime: true }}
-                        className={inputClassName}
-                        value={data.timeslot}
-                        onChange={handleTimeslotChange}
+                      options={{ noCalendar: true, enableTime: true }}
+                      className={inputClassName}
+                      value={data.timeslot}
+                      onChange={handleTimeslotChange}
                     />
                   </div>
                 </div>
@@ -144,7 +144,7 @@ const EditPackage = () => {
             </button>
           </div>
         </form>
-      }
+      )}
     </div>
   );
 };
