@@ -1,13 +1,33 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { useEffect, useState, createContext } from "react";
+import {
+  Routes,
+  Route,
+  Navigate,
+  Switch,
+  PrivateRoute,
+  Redirect,
+  Router,
+} from "react-router-dom";
 
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import NewPackage from "./pages/NewPackage";
 import EditPackage from "./pages/EditPackage";
-import { useLoggedInStatus } from "./components/hooks/hooks";
+import { useLoggedInStatus } from "./hooks/hooks";
+import LoginForm from "./components/LoginForm/LoginForm";
+
+export const AuthContext = createContext();
 
 function App() {
-  const isLoggedIn = useLoggedInStatus();
+  const [isLoggedIn, setToken, setExpiry] = useLoggedInStatus();
+
+  useEffect(() => {
+    const token = window.localStorage.getItem("token");
+    const expiry = window.localStorage.getItem("expiry");
+    setToken(token);
+    setExpiry(expiry);
+  }, [isLoggedIn]);
+  // <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
 
   return (
     <>
@@ -15,7 +35,7 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={isLoggedIn ? <Navigate to="/dashboard" /> : <Home />}
+            element={isLoggedIn ? <Navigate to="/dashboard" /> : <LoginForm />}
           />
           <Route
             path="/dashboard"

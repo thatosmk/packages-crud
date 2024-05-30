@@ -23,7 +23,7 @@ async function signIn({ email, password }) {
 
 // Get all packages
 async function allPackages() {
-  await fetch(`${API_BASE_URL}/api/v1/packages`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/packages`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -32,13 +32,39 @@ async function allPackages() {
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Headers": "*",
     },
-  }).then((data) => { return data.json(); }).then((data) => { return data['packages'] }).catch((error) => console.error(error));
+  }); //.then((data) => { return data.json(); }).then((data) => { return data['packages'] }).catch((error) => console.error(error));
+
+  return response.json();
 }
 
 // Create a new package
 async function createPackage({ location, destination, date, timeslot }) {
   const response = await fetch(`${API_BASE_URL}/api/v1/packages`, {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers": "*",
+    },
+    body: JSON.stringify({
+      package: {
+        location: location,
+        destination: destination,
+        date: date,
+        timeslot: timeslot,
+      },
+    }),
+  });
+
+  return response.json();
+}
+
+// Update package
+async function updatePackage({ id, location, destination, date, timeslot }) {
+  const response = await fetch(`${API_BASE_URL}/api/v1/packages/${id}`, {
+    method: "PUT",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
@@ -91,4 +117,13 @@ async function deletePackage({ id }) {
   return response.json();
 }
 
-export { API_BASE_URL, token, signIn, deletePackage, allPackages, createPackage, getPackage };
+export {
+  API_BASE_URL,
+  token,
+  signIn,
+  deletePackage,
+  allPackages,
+  createPackage,
+  getPackage,
+  updatePackage,
+};

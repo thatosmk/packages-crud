@@ -1,36 +1,52 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
 
 import { signIn } from "../../backend";
+import { inputClassName } from "../../helpers/helpers";
+import { useLoggedInStatus, useSignIn } from "../../hooks/hooks";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isLoggedIn, setToken, setExpiry] = useLoggedInStatus();
 
   const navigate = useNavigate();
 
-  function handleSubmit(event) {
+  const signInUser = async ({ email, password }) => {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await signIn({ email, password });
+      return response;
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     // make the API request
-    signIn({ email: email, password: password })
-      .then((data) => {
-        if (data["token"]) {
-          window.localStorage.setItem('token', data['token']);
-          window.localStorage.setItem('expiry', data['expiry']);
+    await signInUser({ email, password }).then((data) => {
+      if (data?.token && data?.expiry) {
+        setToken(data.token);
+        setExpiry(data.expiry);
+      } else if (data?.message) {
+        setError(data.message);
+        setPassword("");
+      } else {
+        console.error("SOme is weong");
+      }
+    });
 
-          navigate("/dashboard");
-        }
-      })
-      .catch((error) => {
-        setError(error["message"]);
-      });
-
-    setPassword("");
-  }
-
+    if (isLoggedIn) {
+      navigate("/dashboard");
+    }
+  };
 
   function handleEmailChange(event) {
     const { value } = event.target;
@@ -54,13 +70,13 @@ function LoginForm() {
         <div className="my-4 sm:my-8">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {error && (
-              <div className="py-6">
-                <p className="font-medium">{error}</p>
+              <div className="rounded bg-red-100 px-4 py-3">
+                <p className="font-medium text-red-600">{error}</p>
               </div>
             )}
             <div>
               <label
-                for="email"
+                htmlFor="email"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
                 Email address
@@ -75,7 +91,7 @@ function LoginForm() {
                   value={email}
                   autoComplete="email"
                   required
-                  className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className={inputClassName}
                 />
               </div>
             </div>
@@ -83,19 +99,11 @@ function LoginForm() {
             <div>
               <div className="flex items-center justify-between">
                 <label
-                  for="password"
+                  htmlFor="password"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
                   Password
                 </label>
-                <div className="text-sm">
-                  <a
-                    href="#"
-                    className="font-semibold text-indigo-600 hover:text-indigo-500"
-                  >
-                    Forgot password?
-                  </a>
-                </div>
               </div>
               <div className="mt-2">
                 <input
@@ -106,7 +114,7 @@ function LoginForm() {
                   type="password"
                   autoComplete="current-password"
                   required
-                  className="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className={inputClassName}
                 />
               </div>
             </div>
