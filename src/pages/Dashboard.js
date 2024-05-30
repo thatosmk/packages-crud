@@ -2,54 +2,41 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
-import { API_BASE_URL, token, deletePackage } from "../backend";
-import { useLoggedInStatus } from "../components/hooks/hooks";
+import { API_BASE_URL, token, deletePackage, allPackages } from "../backend";
+import { useLoggedInStatus } from "../hooks/hooks";
 
-const Dashboard = ({ firstName }) => {
+const Dashboard = ({ email }) => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(null);
   const [packages, setPackages] = useState(null);
 
-  const isLoggedIn = useLoggedInStatus();
+  const { isLoggedIn } = useLoggedInStatus();
+  const fetchPackages = async () => {
+    try {
+      const response = await allPackages();
+      setLoading(true);
+      setPackages(response.packages);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/v1/packages`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-        "Access-Control-Allow-Methods":
-          "GET, POST, PUT, DELETE, PATCH, OPTIONS",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "*",
-      },
-    })
-      .then((data) => {
-        return data.json();
-      })
-      .then((data) => {
-        console.log(data);
-        setPackages(data.packages);
-      })
-      .catch((error) => console.error(error));
-  }, [packages]);
+    fetchPackages();
+  }, []);
 
-  function removePackage(event, id) {
+  const removePackage = async (event, id) => {
     event.preventDefault();
-    console.log(id);
-    deletePackage({ id: id })
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
+    await deletePackage({ id: id });
+  };
 
   return (
     <div className="container mx-auto py-10 sm:py-20">
       <div className="flex items-center justify-between">
         <h1 className="scroll-m-10 text-xl font-bold tracking-tight lg:text-3xl">
-          Welcome back, {firstName}
+          Welcome back, {email}
         </h1>
         {packages !== undefined && packages !== null && packages.length > 0 && (
           <button

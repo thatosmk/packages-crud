@@ -6,8 +6,8 @@ import "flatpickr/dist/themes/material_green.css";
 import Flatpickr from "react-flatpickr";
 
 import { createPackage } from "../backend";
-import { useLoggedInStatus } from "../components/hooks/hooks";
-import { inputClassName } from "../components/helpers/helpers";
+import { useLoggedInStatus } from "../hooks/hooks";
+import { inputClassName } from "../helpers/helpers";
 
 const NewPackage = () => {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ const NewPackage = () => {
   const [timeslot, setTimeslot] = useState("");
   const [error, setError] = useState("");
 
-  const isLoggedIn = useLoggedInStatus();
+  const [isLoggedIn] = useLoggedInStatus();
 
   function handleLocationChange(event) {
     const { value } = event.target;
@@ -27,39 +27,29 @@ const NewPackage = () => {
     const { value } = event.target;
     setDestination(value);
   }
-  function handleDateChange(value) {
-    setDate(value);
-  }
-  function handleTimeslotChange(value) {
-    setTimeslot(value);
-  }
 
   function handleSubmit(event) {
     event.preventDefault();
 
-    if (isLoggedIn) {
       // make the API request
-      createPackage({
-        location: location,
-        destination: destination,
-        date: date,
-        timeslot: timeslot,
+    createPackage({
+      location: location,
+      destination: destination,
+      date: date,
+      timeslot: timeslot,
+    })
+      .then((data) => {
+        if (data["package"]) {
+          navigate("/dashboard");
+        }
       })
-        .then((data) => {
-          if (data["package"]) {
-            navigate("/dashboard");
-          }
-        })
-        .catch((error) => {
-          setError(error["message"]);
-        });
-    } else {
-      navigate("/");
-    }
+      .catch((error) => {
+        setError(error["message"]);
+      });
   }
 
   return (
-    <div className="container mx-auto py-10 sm:py-20">
+    <div className="max-w-4xl mx-auto py-10 sm:py-20">
       <h1 className="scroll-m-10 text-xl font-bold tracking-tight lg:text-3xl">
         Add new package
       </h1>
@@ -71,17 +61,10 @@ const NewPackage = () => {
         <div className="space-y-12">
           <div className="border-b border-gray-900/10 pb-12"></div>
           <div className="border-b border-gray-900/10 pb-12">
-            <h2 className="text-base font-semibold leading-7 text-gray-900">
-              Personal Information
-            </h2>
-            <p className="mt-1 text-sm leading-6 text-gray-600">
-              Use a permanent address where you can receive mail.
-            </p>
-
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
               <div className="sm:col-span-3">
                 <label
-                  for="first-name"
+                  htmlFor="first-name"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
                   Location
@@ -95,13 +78,14 @@ const NewPackage = () => {
                     id="location"
                     autoComplete="package-location"
                     className={inputClassName}
+                    required
                   />
                 </div>
               </div>
 
               <div className="sm:col-span-3">
                 <label
-                  for="last-name"
+                  htmlFor="last-name"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
                   Destination
@@ -115,13 +99,14 @@ const NewPackage = () => {
                     id="destination"
                     autoComplete="destination"
                     className={inputClassName}
+                    required
                   />
                 </div>
               </div>
 
               <div className="sm:col-span-3">
                 <label
-                  for="date"
+                  htmlFor="date"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
                   Date
@@ -140,7 +125,7 @@ const NewPackage = () => {
 
               <div className="sm:col-span-3">
                 <label
-                  for="country"
+                  htmlFor="timeslot"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
                   Time
