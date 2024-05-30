@@ -1,16 +1,11 @@
-import { useEffect, useState, createContext } from "react";
+import { useEffect, createContext } from "react";
 import {
   Routes,
   Route,
   Navigate,
-  Switch,
-  PrivateRoute,
-  Redirect,
-  Router,
 } from "react-router-dom";
 
 import Dashboard from "./pages/Dashboard";
-import Home from "./pages/Home";
 import NewPackage from "./pages/NewPackage";
 import EditPackage from "./pages/EditPackage";
 import { useLoggedInStatus } from "./hooks/hooks";
@@ -27,7 +22,6 @@ function App() {
     setToken(token);
     setExpiry(expiry);
   }, [isLoggedIn]);
-  // <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
 
   return (
     <>
